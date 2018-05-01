@@ -24,26 +24,6 @@ import java.sql.SQLException;
 public class DataWarehouseConfig {
     private static final Logger logger = LoggerFactory.getLogger(DataWarehouseConfig.class);
 
-    static {
-        logger.info("Attempting to deregister and then reregister REDSHIFT driver");
-        // Put the redshift driver at the end so that it doesn't
-        // conflict with postgres queries
-        java.util.Enumeration<Driver> drivers =  DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            Driver d = drivers.nextElement();
-            if (d.getClass().getName().equals("com.amazon.redshift.jdbc41.Driver") || d.getClass().getName().equals("com.amazon.redshift.jdbc42.Driver")) {
-                try {
-                    logger.info("Reloading {}", d.getClass().getName());
-                    DriverManager.deregisterDriver(d);
-                    DriverManager.registerDriver(d);
-                } catch (SQLException e) {
-                    throw new RuntimeException("Could not deregister redshift driver");
-                }
-                break;
-            }
-        }
-    }
-
     @Autowired
     Environment env;
 

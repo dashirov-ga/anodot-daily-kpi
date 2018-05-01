@@ -7,10 +7,10 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.1.RELEASE</version>
 	</parent>
-	<artifactId>anadot-daily-kpi</artifactId>
+	<artifactId>anodot-daily-kpi</artifactId>
 	<groupId>co.ga.de.df.egress</groupId>
 	<name>Spring Boot Batch Sample</name>
-	<description>Spring Boot Batch Sample</description>
+	<description>Anodot Daily KPI Egress Data Feed [Spring Boot Batch]</description>
 	<version>1.0.0-SNAPSHOT</version>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
@@ -19,7 +19,11 @@
 	</organization>
 	<properties>
 		<main.basedir>${basedir}/../..</main.basedir>
-	</properties>
+        <docker.image.prefix>${user.name}</docker.image.prefix>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <start-class>co.ga.de.df.egress.batch.AnodotDailyKpiApplication</start-class>
+        <java.version>9</java.version>
+    </properties>
     <repositories>
         <repository>
             <id>central</id>
@@ -73,6 +77,11 @@
             <artifactId>anodot-metrics</artifactId>
             <version>3.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.java-json-tools</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>2.2.8</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -80,7 +89,86 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.2.3</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            <!-- Copy Dockerfile -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/docker</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/docker</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.build.directory}/docker/Dockerfile.txt</sourceFile>
+                            <destinationFile>${project.build.directory}/docker/Dockerfile</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>zip-files</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <zip destfile="${project.build.directory}/app.zip">
+                                    <zipfileset dir="${project.build.directory}/docker"/>
+                                    <zipfileset dir="${project.build.directory}" includes="${project.artifactId}.jar"/>
+                                </zip>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
+
         <extensions>
             <extension>
                 <groupId>ar.com.synergian</groupId>
@@ -88,5 +176,6 @@
                 <version>0.2.5</version>
             </extension>
         </extensions>
+
 	</build>
 </project>

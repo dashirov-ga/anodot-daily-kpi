@@ -42,7 +42,11 @@ public class KPIRepositoryJob {
         return new Tasklet() {
             @Override
             public RepeatStatus execute(StepContribution contribution, ChunkContext context) throws IOException {
-                List<KpiRepositoryDTO> kpis = jdbcTemplate.queryForList("SELECT  * FROM atomic.kpi_repo WHERE cdate=CURRENT_DATE-1",KpiRepositoryDTO.class);
+                List<KpiRepositoryDTO> kpis = jdbcTemplate.query(
+                        "SELECT  * " +
+                                "FROM atomic.kpi_repo " +
+                                "WHERE cdate=CURRENT_DATE-1",
+                        new KpiRepositoryRowMapper());
                 for (KpiRepositoryDTO kpi: kpis) {
                     anodot.send(MetricName.builder(kpi.getKpi())
                             .withPropertyValue("team",kpi.getTeam())

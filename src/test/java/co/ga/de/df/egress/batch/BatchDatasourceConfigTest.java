@@ -39,6 +39,6 @@ public class BatchDatasourceConfigTest {
     public void dataSourceTest() {
         List<String> r = jdbcTemplate.query("SELECT USER;", (resultSet, i) -> resultSet.getString("current_user"));
         Assert.assertEquals(1,r.size());
-        Assert.assertEquals("dashirov",r.get(0));
+        Assert.assertEquals("davidashirov",r.get(0));
     }
 }
