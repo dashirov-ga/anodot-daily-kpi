@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<!-- Your own application should inherit from spring-boot-starter-parent -->
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.1.RELEASE</version>
-	</parent>
-	<artifactId>anodot-daily-kpi</artifactId>
-	<groupId>co.ga.de.df.egress</groupId>
-	<name>Spring Boot Batch Sample</name>
-	<description>Anodot Daily KPI Egress Data Feed [Spring Boot Batch]</description>
-	<version>1.0.0-SNAPSHOT</version>
-	<url>http://projects.spring.io/spring-boot/</url>
-	<organization>
-		<name>Pivotal Software, Inc.</name>
-		<url>http://www.spring.io</url>
-	</organization>
-	<properties>
-		<main.basedir>${basedir}/../..</main.basedir>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <!-- Your own application should inherit from spring-boot-starter-parent -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.1.RELEASE</version>
+    </parent>
+    <artifactId>anodot-daily-kpi</artifactId>
+    <groupId>co.ga.de.df.egress</groupId>
+    <name>Spring Boot Batch Sample</name>
+    <description>Anodot Daily KPI Egress Data Feed [Spring Boot Batch]</description>
+    <version>1.0.0-SNAPSHOT</version>
+    <url>http://projects.spring.io/spring-boot/</url>
+    <organization>
+        <name>Genral Assembly Space, Inc.</name>
+        <url>http://www.ga.co</url>
+    </organization>
+    <properties>
+        <main.basedir>${basedir}/../..</main.basedir>
         <docker.image.prefix>${user.name}</docker.image.prefix>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>co.ga.de.df.egress.batch.AnodotDailyKpiApplication</start-class>
-        <java.version>9</java.version>
+        <java.version>1.8</java.version>
     </properties>
     <repositories>
         <repository>
@@ -30,10 +31,10 @@
             <url>http://central.maven.org/maven2/</url>
         </repository>
 
-            <repository>
-                <id>redshift</id>
-                <url>https://s3.amazonaws.com/redshift-maven-repository/release</url>
-            </repository>
+        <repository>
+            <id>redshift</id>
+            <url>https://s3.amazonaws.com/redshift-maven-repository/release</url>
+        </repository>
         <repository>
             <id>anodot-maven-repo-release</id>
             <url>https://bitbucket.org/anodotengineering/anodot-maven-repo-release/raw/master</url>
@@ -45,15 +46,27 @@
             <url>https://raw.github.com/synergian/wagon-git/releases</url>
         </pluginRepository>
     </pluginRepositories>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-batch</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
+    <distributionManagement>
+        <repository>
+            <id>S3_releases</id>
+            <url>https://nexus.generalassemb.ly/repository/maven-ga-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>S3_snapshots</id>
+            <url>https://nexus.generalassemb.ly/repository/maven-ga-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -62,37 +75,32 @@
         </dependency>
         <dependency>
             <groupId>com.amazon.redshift</groupId>
-            <artifactId>redshift-jdbc42</artifactId>
-            <!-- alt: redshift-jdbc42-no-awssdk -->
+            <artifactId>redshift-jdbc42-no-awssdk</artifactId>
             <version>1.2.12.1017</version>
             <scope>runtime</scope>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.anodot</groupId>
             <artifactId>anodot-metrics</artifactId>
             <version>3.0.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.java-json-tools</groupId>
-            <artifactId>json-schema-validator</artifactId>
-            <version>2.2.8</version>
-        </dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+    </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.2.3</version>
+                <version>1.0.0</version>
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
@@ -167,7 +175,7 @@
                     </execution>
                 </executions>
             </plugin>
-		</plugins>
+        </plugins>
 
         <extensions>
             <extension>
@@ -177,5 +185,5 @@
             </extension>
         </extensions>
 
-	</build>
+    </build>
 </project>

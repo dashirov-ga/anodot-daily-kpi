@@ -1,4 +1,4 @@
-FROM java:9-jdk
+FROM openjdk:8-jdk
 
 VOLUME /tmp
 ADD anodot-daily-kpi.jar /opt/anodot-daily-kpi/

@@ -16,6 +16,7 @@
 
 package co.ga.de.df.egress.batch;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
@@ -30,6 +31,7 @@ public class AnodotDailyKpiApplicationTests {
 	public OutputCapture outputCapture = new OutputCapture();
 
 	@Test
+	@Ignore
 	public void testDefaultSettings() throws Exception {
 		assertEquals(0, SpringApplication.exit(SpringApplication
 				.run(AnodotDailyKpiApplication.class)));
