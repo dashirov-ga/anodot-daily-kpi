@@ -93,7 +93,9 @@ hs_err_pid*
 .idea/encodings.xml
 .idea/misc.xml
 .idea/uiDesigner.xml
-.idea/workspace.xml
+.idea/anodot-daily-kpi.iml
+.idea/dataSources.xml
+.idea/modules.xml
 anadot-daily-kpi.iml
-src/main/resources/
-src/test/resources/
+src/main/resources/*.properties
+src/test/resources/*.properties
