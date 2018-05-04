@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk
+FROM store/oracle/serverjre:8
 
 VOLUME /tmp
 ADD anodot-daily-kpi.jar /opt/anodot-daily-kpi/
